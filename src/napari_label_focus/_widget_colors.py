@@ -4,7 +4,7 @@ import napari
 import napari.layers
 import numpy as np
 import pandas as pd
-from PyQt5.QtCore import Qt
+from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QComboBox, QGridLayout, QLabel, QWidget
 
 from napari_label_focus._featurizer import FeaturizerWidget
@@ -121,7 +121,7 @@ class FeaturesColorWidget(QWidget):
 
         # Create the layout
         self.setLayout(QGridLayout())
-        self.layout().setAlignment(Qt.AlignTop)
+        self.layout().setAlignment(Qt.AlignmentFlag.AlignTop)
 
         # `Color by` = Hue of the selected labels layer
         self.layout().addWidget(QLabel("Color by", self), 0, 0)  # type: ignore

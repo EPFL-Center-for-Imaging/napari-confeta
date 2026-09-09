@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from napari.utils.notifications import show_info
 from napari_toolkit.containers.collapsible_groupbox import QCollapsibleGroupBox
-from PyQt5.QtCore import Qt
+from qtpy.QtCore import Qt
 from qtpy.QtWidgets import (QCheckBox, QComboBox, QFileDialog, QGridLayout,
                             QLabel, QPushButton, QSizePolicy, QTableWidget,
                             QTableWidgetItem, QWidget)
@@ -143,7 +143,7 @@ class ConfigurableFeaturesTableWidget(QWidget):
 
         # Create the layout
         self.setLayout(QGridLayout())
-        self.layout().setAlignment(Qt.AlignTop)
+        self.layout().setAlignment(Qt.AlignmentFlag.AlignTop)
         
         # Sort table
         self.layout().addWidget(QLabel("Sort by", self), 1, 0)  # type: ignore
