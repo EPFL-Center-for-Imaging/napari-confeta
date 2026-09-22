@@ -1,4 +1,4 @@
-# Configurable Features Table for Napari
+# 🎊 Confeta: Configurable Features Table for Napari
 
 [demo.webm](https://github.com/user-attachments/assets/d44aa86c-7976-4240-91bd-ca194762d038)
 
@@ -30,7 +30,7 @@ For example, the following code extends the behaviour of the table to display th
 import napari
 import pandas as pd
 from skimage.measure import regionprops_table
-from napari_label_focus import ConfigurableFeaturesTableWidget
+from napari_confeta import ConfigurableFeaturesTableWidget
 
 # Write an "area" featurizer
 def area_featurizer(labels: np.ndarray) -> pd.DataFrame:
@@ -53,7 +53,7 @@ For example:
 
 ```python
 import napari
-from napari_label_focus import ConfigurableFeaturesTableWidget, SelectionContext
+from napari_confeta import ConfigurableFeaturesTableWidget, SelectionContext
 
 def print_selection_context(ctx: SelectionContext):
     print(f"Napari viewer: {ctx.viewer}")
@@ -72,9 +72,9 @@ In this case, the function `print_selection_context` gets called whenever users 
 
 ## Installation
 
-You can install `napari-label-focus` via [pip]:
+You can install `napari-confeta` via [pip]:
 
-    pip install napari-label-focus
+    pip install napari-confeta
 
 ## Contributing
 

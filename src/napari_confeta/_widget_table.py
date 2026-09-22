@@ -7,14 +7,23 @@ import pandas as pd
 from napari.utils.notifications import show_info
 from napari_toolkit.containers.collapsible_groupbox import QCollapsibleGroupBox
 from qtpy.QtCore import Qt
-from qtpy.QtWidgets import (QCheckBox, QComboBox, QFileDialog, QGridLayout,
-                            QLabel, QPushButton, QSizePolicy, QTableWidget,
-                            QTableWidgetItem, QWidget)
+from qtpy.QtWidgets import (
+    QCheckBox,
+    QComboBox,
+    QFileDialog,
+    QGridLayout,
+    QLabel,
+    QPushButton,
+    QSizePolicy,
+    QTableWidget,
+    QTableWidgetItem,
+    QWidget,
+)
 
-from napari_label_focus._context import SelectionContext
-from napari_label_focus._events import default_table_click_event
-from napari_label_focus._featurizer import FeaturizerWidget
-from napari_label_focus._utils import sanitize_layer_features
+from napari_confeta._context import SelectionContext
+from napari_confeta._events import default_table_click_event
+from napari_confeta._featurizer import FeaturizerWidget
+from napari_confeta._utils import sanitize_layer_features
 
 
 class TableUIStore:
@@ -144,7 +153,7 @@ class ConfigurableFeaturesTableWidget(QWidget):
         # Create the layout
         self.setLayout(QGridLayout())
         self.layout().setAlignment(Qt.AlignmentFlag.AlignTop)
-        
+
         # Sort table
         self.layout().addWidget(QLabel("Sort by", self), 1, 0)  # type: ignore
         self.sort_by_cb = QComboBox()
@@ -182,7 +191,7 @@ class ConfigurableFeaturesTableWidget(QWidget):
             lambda e: self._layer_selection_changed(None)
         )
         self._layer_selection_changed(None)
-        
+
     def _save_csv(self, e):
         layer = self.selected_layer
         if layer is not None:
@@ -243,7 +252,7 @@ class ConfigurableFeaturesTableWidget(QWidget):
 
         # Update visible properties
         self._update_visible_props_layout(layer)
-        
+
         # Sort and update table
         self._update_table_layout(layer)
 

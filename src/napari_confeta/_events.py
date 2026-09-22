@@ -1,4 +1,4 @@
-from napari_label_focus._context import SelectionContext
+from napari_confeta._context import SelectionContext
 import napari.layers
 
 

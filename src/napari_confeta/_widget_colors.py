@@ -7,9 +7,8 @@ import pandas as pd
 from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QComboBox, QGridLayout, QLabel, QWidget
 
-from napari_label_focus._featurizer import FeaturizerWidget
-from napari_label_focus._utils import (color_labels_layer_by_values,
-                                       sanitize_layer_features)
+from napari_confeta._featurizer import FeaturizerWidget
+from napari_confeta._utils import color_labels_layer_by_values, sanitize_layer_features
 
 # Selected colormaps from Matplotlib (https://matplotlib.org/stable/users/explain/colors/colormaps.html)
 # We avoid colormaps with black values as they get rendered weirdly.
@@ -53,11 +52,11 @@ class ColorUIStore:
     def set_color_by(self, layer: napari.layers.Layer, color_by: str):
         self.ensure_registered(layer)
         self.state[layer]["color_by"] = color_by
-        
+
     def get_alpha_by(self, layer: napari.layers.Layer) -> Optional[str]:
         props = self.ensure_registered(layer)
         return props.get("alpha_by")
-    
+
     def set_alpha_by(self, layer: napari.layers.Layer, alpha_by: str):
         self.ensure_registered(layer)
         self.state[layer]["alpha_by"] = alpha_by
@@ -77,7 +76,7 @@ class ColorUIStore:
             for col_idx, col in enumerate(features_df.columns):
                 if col == color_by:
                     return col_idx
-    
+
     def get_alpha_by_col_idx(self, layer: napari.layers.Layer) -> Optional[int]:
         features_df = sanitize_layer_features(layer)
         alpha_by = self.get_alpha_by(layer)
@@ -135,14 +134,14 @@ class FeaturesColorWidget(QWidget):
         self.colormap_cb.addItems(COLORMAPS)
         self.layout().addWidget(self.colormap_cb, 1, 1)  # type: ignore
         self.colormap_cb.currentTextChanged.connect(self._colormap_changed)
-        
+
         # Alpha (transparency)
         self.layout().addWidget(QLabel("Transparency", self), 2, 0)  # type: ignore
         self.alpha_by_cb = QComboBox()
         self.alpha_by_cb.addItems([""])
         self.layout().addWidget(self.alpha_by_cb, 2, 1)  # type: ignore
         self.alpha_by_cb.currentTextChanged.connect(self._alpha_changed)
-        
+
         # Layer events
         self.viewer.layers.selection.events.changed.connect(
             self._layer_selection_changed
@@ -151,7 +150,7 @@ class FeaturesColorWidget(QWidget):
             lambda e: self._layer_selection_changed(None)
         )
         self._layer_selection_changed(None)
-        
+
     ### Callbacks that lead to updating the UI (layer selection change, features change, selected label change) ###
 
     def _layer_selection_changed(self, event):
@@ -184,7 +183,7 @@ class FeaturesColorWidget(QWidget):
 
         # Update color dropdown
         self._update_color_cb(layer)
-        
+
         # Update alpha dropdown
         self._update_alpha_cb(layer)
 
@@ -205,13 +204,13 @@ class FeaturesColorWidget(QWidget):
 
         if col_idx is not None:
             self.color_by_cb.setCurrentIndex(col_idx)
-    
+
     def _update_alpha_cb(self, layer: napari.layers.Layer):
         col_idx = self.props_ui_store.get_alpha_by_col_idx(layer)
 
         self.alpha_by_cb.clear()
         self.alpha_by_cb.addItems([""])
-        
+
         df_features = sanitize_layer_features(layer)
 
         if len(df_features.columns) > 0:
@@ -253,7 +252,7 @@ class FeaturesColorWidget(QWidget):
         color_by = self.props_ui_store.get_color_by(self.selected_layer)
         colormap = self.colormap_cb.currentText()
         alpha_by = self.props_ui_store.get_alpha_by(self.selected_layer)
-        
+
         self.props_ui_store.set_colormap(self.selected_layer, colormap)
 
         color_labels_layer_by_values(

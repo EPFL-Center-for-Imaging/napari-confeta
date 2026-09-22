@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from napari.utils.notifications import show_warning
 
-from napari_label_focus._utils import sanitize_layer_features
+from napari_confeta._utils import sanitize_layer_features
 
 from numba import njit
 
@@ -103,13 +103,13 @@ class Featurizer:
             f"{col}_existing" for col in shared_cols
         ]
         df_merged = df_merged.drop(columns=cols_to_drop)
-        
+
         # For Napari to display the correct label on hover, we need to sort rows by 'label' and add missing labels, including the background
         lab_max = df_merged.label.max()
-        df_sth = pd.DataFrame({"label": np.arange(lab_max+1)})
+        df_sth = pd.DataFrame({"label": np.arange(lab_max + 1)})
         df_merged = pd.merge(df_sth, df_merged, how="outer", on="label")
         df_merged.sort_values(by="label", inplace=True)
-        
+
         return df_merged
 
 
@@ -135,7 +135,7 @@ class FeaturizerWidget:
             lambda e: self._selection_changed(None)
         )
         self._selection_changed(None)
-        
+
     def _selection_changed(self, event=None):
         if event is None:
             layer = self.viewer.layers.selection.active
@@ -155,11 +155,10 @@ class FeaturizerWidget:
             layer.events.paint.connect(self._recompute)
 
         self.selected_layer = layer
-        
+
         # Only compute features on selection change when the layer is seen for the first time
         if layer not in self.seen_layers:
             self.featurizer_functs.recompute_features(layer)
-        
 
     def _recompute(self, event):
         layer = event.sources[0]

@@ -1,10 +1,10 @@
 [project]
-name = "napari-label-focus"
+name = "napari-confeta"
 dynamic = ["version"]
 description = "A configurable features table widget for Napari."
 readme = "README.md"
 requires-python = ">=3.9"
-license = {file = "LICENSE"}
+license = { file = "LICENSE" }
 authors = [{ name = "Mallory Wittwer", email = "mallory.wittwer@epfl.ch" }]
 
 classifiers = [
@@ -32,11 +32,11 @@ dependencies = [
 ]
 
 [project.entry-points."napari.manifest"]
-napari_label_focus = "napari_label_focus:napari.yaml"
+napari_confeta = "napari_confeta:napari.yaml"
 
 [project.urls]
-homepage = "https://github.com/EPFL-Center-for-Imaging/napari-label-focus"
-repository = "https://github.com/EPFL-Center-for-Imaging/napari-label-focus"
+homepage = "https://github.com/EPFL-Center-for-Imaging/napari-confeta"
+repository = "https://github.com/EPFL-Center-for-Imaging/napari-confeta"
 
 [build-system]
 requires = ["setuptools>=42.0.0", "wheel", "setuptools_scm"]
@@ -52,6 +52,6 @@ where = ["src"]
 "*" = ["*.yaml"]
 
 [tool.setuptools_scm]
-write_to = "src/napari_label_focus/_version.py"
+write_to = "src/napari_confeta/_version.py"
 version_scheme = "guess-next-dev"
 local_scheme = "no-local-version"
