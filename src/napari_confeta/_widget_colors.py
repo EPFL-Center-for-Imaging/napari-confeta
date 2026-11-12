@@ -8,7 +8,11 @@ from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QComboBox, QGridLayout, QLabel, QWidget
 
 from napari_confeta._featurizer import FeaturizerWidget
-from napari_confeta._utils import color_labels_layer_by_values, sanitize_layer_features
+from napari_confeta._utils import (
+    color_labels_layer_by_values,
+    numeric_columns,
+    sanitize_layer_features,
+)
 
 # Selected colormaps from Matplotlib (https://matplotlib.org/stable/users/explain/colors/colormaps.html)
 # We avoid colormaps with black values as they get rendered weirdly.
@@ -72,16 +76,18 @@ class ColorUIStore:
     def get_color_by_col_idx(self, layer: napari.layers.Layer) -> Optional[int]:
         features_df = sanitize_layer_features(layer)
         color_by = self.get_color_by(layer)
-        if color_by in features_df.columns:
-            for col_idx, col in enumerate(features_df.columns):
+        cols = numeric_columns(features_df)
+        if color_by in cols:
+            for col_idx, col in enumerate(cols):
                 if col == color_by:
                     return col_idx
 
     def get_alpha_by_col_idx(self, layer: napari.layers.Layer) -> Optional[int]:
         features_df = sanitize_layer_features(layer)
         alpha_by = self.get_alpha_by(layer)
-        if alpha_by in features_df.columns:
-            for col_idx, col in enumerate(features_df.columns):
+        cols = numeric_columns(features_df)
+        if alpha_by in cols:
+            for col_idx, col in enumerate(cols):
                 if col == alpha_by:
                     return col_idx
 
@@ -199,8 +205,7 @@ class FeaturesColorWidget(QWidget):
 
         df_features = sanitize_layer_features(layer)
 
-        if len(df_features.columns) > 0:
-            self.color_by_cb.addItems(df_features.columns)
+        self.color_by_cb.addItems(numeric_columns(df_features))
 
         if col_idx is not None:
             self.color_by_cb.setCurrentIndex(col_idx)
@@ -213,8 +218,7 @@ class FeaturesColorWidget(QWidget):
 
         df_features = sanitize_layer_features(layer)
 
-        if len(df_features.columns) > 0:
-            self.alpha_by_cb.addItems(df_features.columns)
+        self.alpha_by_cb.addItems(numeric_columns(df_features))
 
         if col_idx is not None:
             col_idx = col_idx + 1  # offset due to the extra "" item

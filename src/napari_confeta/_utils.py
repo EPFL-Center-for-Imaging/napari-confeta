@@ -24,6 +24,13 @@ def sanitize_layer_features(layer: napari.layers.Layer) -> pd.DataFrame:
             return pd.DataFrame()
 
 
+def numeric_columns(features_df: pd.DataFrame) -> list[str]:
+    """Names of the numeric (non-boolean) columns of a features dataframe."""
+    return list(
+        features_df.select_dtypes(include=[np.number], exclude=[bool]).columns
+    )
+
+
 def color_labels_layer_by_values(
     layer: napari.layers.Labels,
     features_df: pd.DataFrame,
@@ -39,8 +46,9 @@ def color_labels_layer_by_values(
     if (colormap is None) or (colormap == ""):
         return
     
-    # Drop the NaNs
-    features_df_filtered = features_df.dropna(axis=0)
+    # Drop the NaNs (only considering the columns that are actually used)
+    used_cols = [c for c in ("label", color_by, alpha_by) if c and c in features_df.columns]
+    features_df_filtered = features_df.dropna(axis=0, subset=used_cols)
     if len(features_df_filtered) == 0:
         return
 
@@ -50,7 +58,7 @@ def color_labels_layer_by_values(
     label_values = features_df_filtered["label"].values
 
     # Check the values to plot from the dataframe
-    numeric_cols = features_df_filtered.select_dtypes(include=[np.number]).columns
+    numeric_cols = numeric_columns(features_df_filtered)
     if color_by not in numeric_cols:
         raise ValueError(
             f"Column {color_by} is either not present or non-numeric (cannot be plotted)."
@@ -63,7 +71,7 @@ def color_labels_layer_by_values(
         )
     
     # Alpha values
-    if alpha_by == "":
+    if (not alpha_by) or (alpha_by not in numeric_cols):
         relative_alpha_vals = np.ones_like(plot_vals)  # Default to full opacity
     else:
         alpha_vals = features_df_filtered[alpha_by].values

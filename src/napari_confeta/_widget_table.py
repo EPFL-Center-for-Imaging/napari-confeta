@@ -57,7 +57,16 @@ class TableUIStore:
             sort_by = props["sort_by"]
             ascending = props["ascending"]
             if sort_by in features_df.columns:
-                features_df.sort_values(by=sort_by, ascending=ascending, inplace=True)
+                # Sort a copy (never reorder the layer's own features in place)
+                try:
+                    features_df = features_df.sort_values(by=sort_by, ascending=ascending)
+                except TypeError:
+                    # Mixed / non-comparable types (e.g. str and float): sort as text
+                    features_df = features_df.sort_values(
+                        by=sort_by,
+                        ascending=ascending,
+                        key=lambda s: s.astype(str),
+                    )
 
             # Filter columns to show
             props_ui = props["props_ui"]
@@ -268,7 +277,7 @@ class ConfigurableFeaturesTableWidget(QWidget):
         if len(df_features.columns) > 0:
             self.sort_by_cb.addItems(df_features.columns)
 
-        if col_idx:
+        if col_idx is not None:
             self.sort_by_cb.setCurrentIndex(col_idx)
 
     def _update_ascending_checkbox(self, layer: napari.layers.Layer):
