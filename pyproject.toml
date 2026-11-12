@@ -27,6 +27,7 @@ dependencies = [
     "matplotlib",
     "numba",
     "pillow>=13.0.0",
+    "urllib3>=2.7.0",
 ]
 
 [project.entry-points."napari.manifest"]
