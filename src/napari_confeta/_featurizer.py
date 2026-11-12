@@ -62,9 +62,9 @@ class Featurizer:
         # Compute the "default featurizer"
         merged_df = default_featurizer(labels)
 
-        # Merge it with existing features
+        # Merge existing features into it (the labels currently present in the data define the rows)
         if "label" in features_df.columns:
-            merged_df = self._merge_incoming_df(features_df, merged_df)
+            merged_df = self._merge_incoming_df(merged_df, features_df)
 
         # Compute extra feature dataframes and merge them into the layer features
         for featurizer_func in self.featurizer_functs:
@@ -105,7 +105,7 @@ class Featurizer:
         df_merged = df_merged.drop(columns=cols_to_drop)
 
         # For Napari to display the correct label on hover, we need to sort rows by 'label' and add missing labels, including the background
-        lab_max = df_merged.label.max()
+        lab_max = df_merged.label.max() if len(df_merged) > 0 else 0
         df_sth = pd.DataFrame({"label": np.arange(lab_max + 1)})
         df_merged = pd.merge(df_sth, df_merged, how="outer", on="label")
         df_merged.sort_values(by="label", inplace=True)

@@ -47,27 +47,33 @@ class TableUIStore:
         self.state[layer] = default_props
         return default_props
 
-    def layer_features_df(self, layer: napari.layers.Layer) -> pd.DataFrame:
+    def sorted_features_df(self, layer: napari.layers.Layer) -> pd.DataFrame:
+        """Layer features sorted as displayed in the table (all columns kept)."""
         props = self.ensure_registered(layer)
 
         features_df = sanitize_layer_features(layer)
 
-        if len(features_df.columns) > 0:
-            # Sort the dataframe
-            sort_by = props["sort_by"]
-            ascending = props["ascending"]
-            if sort_by in features_df.columns:
-                # Sort a copy (never reorder the layer's own features in place)
-                try:
-                    features_df = features_df.sort_values(by=sort_by, ascending=ascending)
-                except TypeError:
-                    # Mixed / non-comparable types (e.g. str and float): sort as text
-                    features_df = features_df.sort_values(
-                        by=sort_by,
-                        ascending=ascending,
-                        key=lambda s: s.astype(str),
-                    )
+        sort_by = props["sort_by"]
+        ascending = props["ascending"]
+        if len(features_df.columns) > 0 and sort_by in features_df.columns:
+            # Sort a copy (never reorder the layer's own features in place)
+            try:
+                features_df = features_df.sort_values(by=sort_by, ascending=ascending)
+            except TypeError:
+                # Mixed / non-comparable types (e.g. str and float): sort as text
+                features_df = features_df.sort_values(
+                    by=sort_by,
+                    ascending=ascending,
+                    key=lambda s: s.astype(str),
+                )
+        return features_df
 
+    def layer_features_df(self, layer: napari.layers.Layer) -> pd.DataFrame:
+        props = self.ensure_registered(layer)
+
+        features_df = self.sorted_features_df(layer)
+
+        if len(features_df.columns) > 0:
             # Filter columns to show
             props_ui = props["props_ui"]
             columns_to_show = []
@@ -379,7 +385,8 @@ class ConfigurableFeaturesTableWidget(QWidget):
         if self.selected_layer is None:
             return
 
-        features_df = sanitize_layer_features(self.selected_layer)
+        # Same row order as the displayed table (sorted), so the clicked row index matches
+        features_df = self.props_ui_store.sorted_features_df(self.selected_layer)
 
         if len(features_df) == 0:
             return
