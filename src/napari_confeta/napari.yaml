@@ -1,15 +1,15 @@
 name: napari-confeta
-display_name: Features Table
+display_name: Confeta
 contributions:
   commands:
     - id: napari-confeta.table
-      title: Features Table
+      title: Confeta
       python_name: napari_confeta:ConfigurableFeaturesTableWidget
     - id: napari-confeta.color
       title: Features Color
       python_name: napari_confeta:FeaturesColorWidget
   widgets:
     - command: napari-confeta.table
-      display_name: Features Table
+      display_name: Confeta
     - command: napari-confeta.color
       display_name: Features Color
