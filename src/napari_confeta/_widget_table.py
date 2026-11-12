@@ -288,8 +288,10 @@ class ConfigurableFeaturesTableWidget(QWidget):
 
     def _update_ascending_checkbox(self, layer: napari.layers.Layer):
         ascending = self.props_ui_store.get_ascending(layer)
-        if ascending:
-            self.sort_ascending.setChecked(ascending)
+        # Reflect the layer's state (block signals so this doesn't write back to the store)
+        self.sort_ascending.blockSignals(True)
+        self.sort_ascending.setChecked(bool(ascending))
+        self.sort_ascending.blockSignals(False)
 
     def _update_visible_props_layout(self, layer: napari.layers.Layer):
         # Clear the existing props layout
