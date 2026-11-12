@@ -3,14 +3,13 @@ name = "napari-confeta"
 dynamic = ["version"]
 description = "A configurable features table widget for Napari."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 license = { file = "LICENSE" }
 authors = [{ name = "Mallory Wittwer", email = "mallory.wittwer@epfl.ch" }]
 
 classifiers = [
     "License :: OSI Approved :: BSD License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -27,6 +26,7 @@ dependencies = [
     "napari-toolkit",
     "matplotlib",
     "numba",
+    "pillow>=13.0.0",
 ]
 
 [project.entry-points."napari.manifest"]
@@ -53,3 +53,8 @@ where = ["src"]
 write_to = "src/napari_confeta/_version.py"
 version_scheme = "guess-next-dev"
 local_scheme = "no-local-version"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+]
